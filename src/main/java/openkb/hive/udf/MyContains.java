@@ -2,12 +2,14 @@ package openkb.hive.udf;
 
 import java.util.List;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.BooleanWritable;
 import org.apache.hadoop.hive.ql.exec.UDFArgumentException;
 import org.apache.hadoop.hive.ql.exec.UDFArgumentLengthException;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.ql.udf.generic.GenericUDF;
 import org.apache.hadoop.hive.serde2.objectinspector.ListObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
+import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspectorUtils;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectInspectorFactory;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.StringObjectInspector;
 
@@ -15,6 +17,7 @@ public class MyContains extends GenericUDF {
 
   ListObjectInspector listOI;
   StringObjectInspector elementOI;
+  private BooleanWritable result;
 
   @Override
   public String getDisplayString(String[] arg0) {
@@ -37,23 +40,38 @@ public class MyContains extends GenericUDF {
       throw new UDFArgumentException("The first argument must be a List of String.");
     }
     
-    return PrimitiveObjectInspectorFactory.javaBooleanObjectInspector;
+    result = new BooleanWritable(false);
+    return PrimitiveObjectInspectorFactory.writableBooleanObjectInspector;
   }
   
   @Override
   public Object evaluate(DeferredObject[] args) throws HiveException {
     
-    List<String> myList = (List<String>) this.listOI.getList(args[0].get());
-    String myString = elementOI.getPrimitiveJavaObject(args[1].get());
-    
+    result.set(false);
+
+    Object myList = args[0].get();
+    Object myString = args[1].get();
+    //System.out.println("DEBUG: myList's type is: " + myList.getClass().getName());
+    //System.out.println("DEBUG: myList's 1st element's type is: " + listOI.getListElement(myList, 0).getClass().getName());
+    //System.out.println("DEBUG: myString's type is: " + myString.getClass().getName());
+
+    int arrayLength = listOI.getListLength(myList);
+
     if (myList == null || myString == null) {
-      return null;
+      return result;
     }
     
-    for(String s: myList) {
-      if (myString.equals(s)) return new Boolean(true);
+    for (int i=0; i<arrayLength; ++i) {
+      Object listElement = listOI.getListElement(myList, i);
+      if (listElement != null) {
+        if (listElement.toString().equals(myString.toString())) {
+          result.set(true);
+          break;
+        }
+      }
     }
-    return new Boolean(false);
+
+    return result;
   }
   
 }
