@@ -1,5 +1,6 @@
 # HiveUDF
 This Hive UDF sample code contains 2 functions: MyUpper() and MyContains()
+
 They are tested in Hive 0.12, 0.13 and 1.0.
 
 ## a. How to build the jar
