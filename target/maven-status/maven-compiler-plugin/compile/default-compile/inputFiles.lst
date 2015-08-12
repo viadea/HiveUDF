@@ -1,2 +1,2 @@
-/mapr/MyCluster/github/hiveudf/src/main/java/openkb/hive/udf/MyContains.java
-/mapr/MyCluster/github/hiveudf/src/main/java/openkb/hive/udf/MyUpper.java
+/mapr/MyCluster/github/hiveudf/HiveUDF/src/main/java/openkb/hive/udf/MyUpper.java
+/mapr/MyCluster/github/hiveudf/HiveUDF/src/main/java/openkb/hive/udf/MyContains.java
