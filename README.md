@@ -3,6 +3,10 @@ This Hive UDF sample code contains 2 functions: MyUpper() and MyContains()
 
 They are tested in Hive 0.12, 0.13 and 1.0.
 
+To make Hive UDF work in Drill, please follow this blog:
+
+http://www.openkb.info/2015/08/how-to-run-hive-udf-in-drill.html 
+
 ## a. How to build the jar
 
 ```shell
